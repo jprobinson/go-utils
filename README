@@ -1,0 +1,8 @@
+Go Utils
+=============
+
+A bucket for helpful, reusable snippets for Go.
+
+Snippets:
+--------
+* ListenForLogSignal(l LogSetup), will setup logging to accept HUP signals from logrotate.
