@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
-	"utils"
+	"github.com/jprobinson/go-utils/utils"
 )
 
 // AccessLogHandler return a http.Handler that wraps h and logs requests to out in
