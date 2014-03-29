@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
 	"github.com/jprobinson/go-utils/utils"
 )
 
@@ -15,22 +16,26 @@ import (
 // See http://httpd.apache.org/docs/2.2/logs.html#combined for a description of this format.
 //
 // AccessLogHandler always sets the ident field of the log to -
-func AccessLogHandler(access_log_name string, h http.Handler) http.Handler {
-	log_handler := accessLogHandler{utils.GetLogFileHandle(access_log_name), h, access_log_name}
-	go utils.ListenForLogSignal(&log_handler)
-	return &log_handler
+func AccessLogHandler(accessLogName string, h http.Handler) http.Handler {
+	logHandler := accessLogHandler{utils.GetLogFileHandle(accessLogName), h, accessLogName}
+
+	go utils.ListenForLogSignal(&logHandler)
+	return &logHandler
 }
 
 // SetupLogging implements the utils.LogSetup interface so we can use the utils package to
 // detect SIGHUP signals to alert us when logrotate is complete.
 func (h *accessLogHandler) SetupLogging() {
 	h.writer = utils.GetLogFileHandle(h.logFile)
-	fmt.Fprintf(h.writer, "setup new access logger")
+}
+
+func (h *accessLogHandler) FileHandle() io.WriteCloser {
+	return h.writer
 }
 
 // accessLogHandler is the http.Handler implementation for creating an access log
 type accessLogHandler struct {
-	writer  io.Writer
+	writer  io.WriteCloser
 	handler http.Handler
 	logFile string
 }
